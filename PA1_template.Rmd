@@ -1,9 +1,10 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 output: 
-  html_document:
-    keep_md: true
+html_document:
+keep_md: true
 ---
+
 ## loading packages
 
 ```{r, echo = TRUE, results='hide'}

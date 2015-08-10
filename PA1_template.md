@@ -1,9 +1,10 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 output: 
-  html_document:
-    keep_md: true
+html_document:
+keep_md: true
 ---
+
 ## loading packages
 
 
@@ -162,23 +163,22 @@ library(chron)
 ```
 
 ```r
-#Obtain Logical Vector
+# Obtain a vector which says if a day is a day of the weekend or not
 isWeekend <- is.weekend(activityNew$date)
 
 #Create a factor and apply to isWeekend
 week_or_weekend <- factor(isWeekend, labels = c('weekday','weekend'))
 
-# use activityNew instead of sum days!
-
-#Add as new column
+#Add as new column to the filled activityset
 activityNew$week_or_weekend <- week_or_weekend
 
-#Aggregate by week_or_weekend
+#Aggregate by week_or_weekend and interval
 steps_avg_interval_New <- aggregate(activityNew$steps, by = list(activityNew$week_or_weekend,activityNew$interval), FUN = mean)
 
 # change columnames
 names(steps_avg_interval_New) <- c('week_or_weekend','interval','steps')
 
+# create a timeseries plot by factor weekday/weekend
 ggplot(steps_avg_interval_New, aes(interval, steps)) + geom_line() + facet_grid(week_or_weekend ~ .) + 
   xlab("5-minute interval") + ylab("average number of steps")
 ```

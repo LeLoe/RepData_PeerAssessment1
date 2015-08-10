@@ -316,23 +316,22 @@ library(chron)
 <pre><code>## Warning: package &#39;chron&#39; was built under R version 3.1.1
 </code></pre>
 
-<pre><code class="r">#Obtain Logical Vector
+<pre><code class="r"># Obtain a vector which says if a day is a day of the weekend or not
 isWeekend &lt;- is.weekend(activityNew$date)
 
 #Create a factor and apply to isWeekend
 week_or_weekend &lt;- factor(isWeekend, labels = c(&#39;weekday&#39;,&#39;weekend&#39;))
 
-# use activityNew instead of sum days!
-
-#Add as new column
+#Add as new column to the filled activityset
 activityNew$week_or_weekend &lt;- week_or_weekend
 
-#Aggregate by week_or_weekend
+#Aggregate by week_or_weekend and interval
 steps_avg_interval_New &lt;- aggregate(activityNew$steps, by = list(activityNew$week_or_weekend,activityNew$interval), FUN = mean)
 
 # change columnames
 names(steps_avg_interval_New) &lt;- c(&#39;week_or_weekend&#39;,&#39;interval&#39;,&#39;steps&#39;)
 
+# create a timeseries plot by factor weekday/weekend
 ggplot(steps_avg_interval_New, aes(interval, steps)) + geom_line() + facet_grid(week_or_weekend ~ .) + 
   xlab(&quot;5-minute interval&quot;) + ylab(&quot;average number of steps&quot;)
 </code></pre>
