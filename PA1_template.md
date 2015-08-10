@@ -6,14 +6,20 @@ output:
 ---
 ## loading packages
 
-```{r, echo = TRUE, results='hide'}
+
+```r
 library(plyr)
 library(ggplot2)
 ```
 
+```
+## Warning: package 'ggplot2' was built under R version 3.1.3
+```
+
 ## Loading and preprocessing the data
 
-```{r, echo = TRUE}
+
+```r
 #The data should be available in the working directory in a file named "activity.zip"
 filename <- "activity.zip"
 
@@ -28,7 +34,8 @@ activityRaw <- read.csv("activity.csv")
 
 ## What is mean total number of steps taken per day?
 
-```{r, echo=true}
+
+```r
 # first, summarize the total steps per day
 
 steps_sum_days_2<-ddply(activityRaw, c("date"), numcolwise(sum), na.rm=TRUE)
@@ -42,21 +49,25 @@ qplot(
   main = "total steps per day",
   xlab = "steps per day"
 )
+```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+
+```r
 # calculate mean and median of the total steps per day
 mean<- mean(steps_sum_days_2$steps,na.rm = TRUE)
 median <- median(steps_sum_days_2$steps,na.rm = TRUE)
-
 ```
 
-The mean of the total steps per day is `r mean`.
+The mean of the total steps per day is 9354.2295082.
 
-The median of the total steps per day is `r median`.
+The median of the total steps per day is 10395.
 
 
 ## What is the average daily activity pattern?
 
-```{r, echo = TRUE}
+
+```r
 # calculate the average number of steps per interval
 steps_avg_interval <- aggregate(activityRaw$steps, FUN = mean, by = list(activityRaw$interval), na.rm = TRUE)
 
@@ -71,18 +82,25 @@ max_interval <- intervals$interval[1]
 # plot the timeseries
 qplot(interval, avg_steps, data = steps_avg_interval, geom = "line", 
       xlab = "5-minute time interval", ylab = "Average number of steps taken")
-
 ```
 
-The interval with the most average steps is `r max_interval`
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
+The interval with the most average steps is 835
 
 ## Imputing missing values
-```{r, echo = TRUE}
 
+```r
 # calculate total number of missing values
 total_missing_values <- sum(is.na(activityRaw$steps))
 total_missing_values
+```
 
+```
+## [1] 2304
+```
+
+```r
 # fill the missing values with the average of the time interval
 
 # make a new dataset where we will fill in the missing values
@@ -113,16 +131,19 @@ qplot(
   main = "total steps per day",
   xlab = "steps per day"
 )
+```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
+```r
 # calculate mean and median of the total steps per day
 mean_new<- mean(steps_sum_days_3$steps,na.rm = TRUE)
 median_new <- median(steps_sum_days_3$steps,na.rm = TRUE)
-
 ```
 
-The mean of the total steps per day with na's removed is `r mean_new`.
+The mean of the total steps per day with na's removed is 1.0766189 &times; 10<sup>4</sup>.
 
-The median of the total steps per day with na's removed is `r median_new`.
+The median of the total steps per day with na's removed is 1.0766189 &times; 10<sup>4</sup>.
 
 This differs form the mean and median calculated without filling in missing values. The missing values were calculated as 0, therefore the mean was much less then without missing values.
 
@@ -130,28 +151,36 @@ The mean and median are the same. There were only full days with missing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r, echo = TRUE}
 
+```r
 # use library chron, because it has a convenient function: is.weekend
 library(chron)
+```
 
-# Obtain a vector which says if a day is a day of the weekend or not
+```
+## Warning: package 'chron' was built under R version 3.1.1
+```
+
+```r
+#Obtain Logical Vector
 isWeekend <- is.weekend(activityNew$date)
 
 #Create a factor and apply to isWeekend
 week_or_weekend <- factor(isWeekend, labels = c('weekday','weekend'))
 
-#Add as new column to the filled activityset
+# use activityNew instead of sum days!
+
+#Add as new column
 activityNew$week_or_weekend <- week_or_weekend
 
-#Aggregate by week_or_weekend and interval
+#Aggregate by week_or_weekend
 steps_avg_interval_New <- aggregate(activityNew$steps, by = list(activityNew$week_or_weekend,activityNew$interval), FUN = mean)
 
 # change columnames
 names(steps_avg_interval_New) <- c('week_or_weekend','interval','steps')
 
-# create a timeseries plot by factor weekday/weekend
 ggplot(steps_avg_interval_New, aes(interval, steps)) + geom_line() + facet_grid(week_or_weekend ~ .) + 
   xlab("5-minute interval") + ylab("average number of steps")
-
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
