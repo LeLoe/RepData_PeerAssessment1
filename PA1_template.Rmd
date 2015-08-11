@@ -6,7 +6,7 @@ keep_md: true
 
 ## loading packages
 
-```{r, echo = TRUE, results='hide'}
+```{r, echo = TRUE, warning=FALSE}
 library(plyr)
 library(ggplot2)
 ```
